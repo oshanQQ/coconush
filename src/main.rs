@@ -10,7 +10,7 @@ fn shelly_loop() {
         // Read line
         let mut input_line = String::new();
         io::stdin().read_line(&mut input_line)
-            .expect("Error: Failed to read a line.");
+            .expect("Shelly error: Failed to read a line.");
 
         arguments = split_line();
         status = execute(arguments);
@@ -19,7 +19,6 @@ fn shelly_loop() {
         }
     }
 }
-
 // fn read_line() ->String {
 //     let buffer_size: i32 = 1024;
 //     let position: i32 = 0;
