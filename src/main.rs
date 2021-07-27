@@ -1,7 +1,6 @@
 use std::io;
 
 fn shelly_loop() {
-    let arguments: String;
     let status: bool;
 
     loop {
@@ -12,7 +11,9 @@ fn shelly_loop() {
         io::stdin().read_line(&mut input_line)
             .expect("Shelly error: Failed to read a line.");
 
-        arguments = split_line();
+        // Separate strings with spaces.
+        let mut arguments: Vec<&str> = input_line.split(' ').collect();
+        
         status = execute(arguments);
         if (!status) {
             break;
