@@ -1,3 +1,14 @@
+use std::io;
+
 fn main() {
-    println!("Rewrite the code from scratch");
+    let mut input_line = String::new();
+    match io::stdin().read_line(&mut input_line) {
+        Ok(n) => {
+            println!("{} bytes read", n);
+            println!("Input: {}", &input_line);
+        }
+        Err(error) => {
+            println!("Error: {}", error);
+        }
+    }
 }
