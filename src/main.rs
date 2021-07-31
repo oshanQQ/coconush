@@ -1,4 +1,5 @@
 use std::io;
+use std::process::Command;
 
 fn main() {
     // Read input line
@@ -8,10 +9,10 @@ fn main() {
     // Parse input line
     // "foo bar baz" => ["foo", "bar", baz]
     let command: Vec<&str> = input_line.split_whitespace().collect();
-    
-    // Print debug for vector
-    for argument in command {
-        println!("{:?}", argument);
-    }
+
+    Command::new(&command[0])
+        .arg(command[1])
+        .spawn()
+        .unwrap();
     
 }
