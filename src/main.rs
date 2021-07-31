@@ -1,5 +1,7 @@
 use std::io;
+use nix::sys::wait::waitpid;
 use nix::unistd::{fork, getpid, getppid, ForkResult};
+use std::process::exit;
 
 fn main() {
     // Read input line
@@ -17,17 +19,28 @@ fn main() {
     println!("Current process id: {}", getpid());
 
     unsafe {
-        match fork() {
+        let pid = match fork() {
             Ok(ForkResult::Parent {child}) => {
                 // I'm a parent process.
                 println!("Main({}) forked a child({})", getpid(), child);
+                child
             }
             Ok(ForkResult::Child) => {
                 // I'm a child process.
                 println!("Child({}) started. PPID is {}", getpid(), getppid());
+                exit(0)
             }
             Err(_) => {
-                println!("Fork failed.");
+                panic!("Fork failed.");
+            }
+        };
+
+        match waitpid(pid, None) {
+            Ok(status) => {
+                println!("Child exited {:?}.", status);
+            }
+            Err(_) => {
+                println!("Waitpid failed.");
             }
         }
     }
