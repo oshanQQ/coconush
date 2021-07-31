@@ -1,7 +1,9 @@
-<h1 style="text-align: center;">
-  <code>
-    <strong>
-      coconush🥥
-    </strong>
-  </code>
-</dh1>
+<h1>
+  <div align="center">
+    <code>
+      <strong>
+        coconush🥥
+      </strong>
+    </code>
+  </div>
+</h1>
