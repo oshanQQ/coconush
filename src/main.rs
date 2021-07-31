@@ -7,7 +7,7 @@ fn main() {
     io::stdin().read_line(&mut input_line).expect("Shelly: Input error.");
 
     // Parse input line
-    // "foo bar baz" => ["foo", "bar", baz]
+    // "foo bar baz" => ["foo", "bar", "baz"]
     let command: Vec<&str> = input_line.split_whitespace().collect();
 
     Command::new(&command[0])
