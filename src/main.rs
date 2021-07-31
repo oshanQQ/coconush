@@ -19,9 +19,11 @@ fn main() {
     unsafe {
         match fork() {
             Ok(ForkResult::Parent {child}) => {
+                // I'm a parent process.
                 println!("Main({}) forked a child({})", getpid(), child);
             }
             Ok(ForkResult::Child) => {
+                // I'm a child process.
                 println!("Child({}) started. PPID is {}", getpid(), getppid());
             }
             Err(_) => {
