@@ -14,8 +14,8 @@ coconush is a toy shell implemented in Rust. The following features have now bee
 
 - [x] Input
 - [x] Fork proccess
-- [ ] Execute command
-- [ ] Receive input repeatedly
+- [x] Execute **two words** command
+- [x] Receive input repeatedly
 
 ## Links
 
