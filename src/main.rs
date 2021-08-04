@@ -19,14 +19,19 @@ fn main() {
     println!("Current process id: {}", getpid());
 
     unsafe {
-        let pid = match fork() {
-            Ok(ForkResult::Parent {child}) => {
-                // I'm a parent process.
+        match fork() {
+            Ok(ForkResult::Parent {child}) => {}
                 println!("Main({}) forked a child({})", getpid(), child);
-                child
+                match waitpid(child, None) {
+                    Ok(_pid) => {
+                        println!("Child exited {:?}.", child);
+                    }
+                    Err(_) => {
+                        println!("Waitpid failed."); 
+                    }
+                }
             }
             Ok(ForkResult::Child) => {
-                // I'm a child process.
                 println!("Child({}) started. PPID is {}", getpid(), getppid());
                 exit(0)
             }
@@ -34,14 +39,5 @@ fn main() {
                 panic!("Fork failed.");
             }
         };
-
-        match waitpid(pid, None) {
-            Ok(status) => {
-                println!("Child exited {:?}.", status);
-            }
-            Err(_) => {
-                println!("Waitpid failed.");
-            }
-        }
     }
 }
