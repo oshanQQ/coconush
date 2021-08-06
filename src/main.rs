@@ -1,12 +1,12 @@
-use std::io;
 use nix::sys::wait::waitpid;
 use nix::unistd::{execvp, fork, getpid, getppid, ForkResult};
-use std::process::exit;
 use std::ffi::CString;
+use std::io;
+use std::process::exit;
 use std::vec::Vec;
 
 fn main() {
-    loop{
+    loop {
         // Read input line
         let mut input_line = String::new();
         match io::stdin().read_line(&mut input_line) {
@@ -28,15 +28,15 @@ fn main() {
 
         println!("Current process id: {}", getpid());
 
-        match unsafe{ fork() } {
-            Ok(ForkResult::Parent {child}) => {
+        match unsafe { fork() } {
+            Ok(ForkResult::Parent { child }) => {
                 println!("Main({}) forked a child({})", getpid(), child);
                 match waitpid(child, None) {
                     Ok(_pid) => {
                         println!("Child exited {:?}.", child);
                     }
                     Err(_) => {
-                        println!("Waitpid failed."); 
+                        println!("Waitpid failed.");
                     }
                 }
             }
