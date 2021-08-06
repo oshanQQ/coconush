@@ -9,7 +9,12 @@ fn main() {
     loop{
         // Read input line
         let mut input_line = String::new();
-        io::stdin().read_line(&mut input_line).expect("Shelly: Input error.");
+        match io::stdin().read_line(&mut input_line) {
+            Ok(_) => {}
+            Err(error) => {
+                println!("coconush error: {}", error);
+            }
+        }
 
         // Parse input line
         // "foo bar baz" => ["foo", "bar", "baz"]
