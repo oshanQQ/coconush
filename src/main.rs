@@ -28,28 +28,26 @@ fn main() {
 
         println!("Current process id: {}", getpid());
 
-        unsafe {
-            match fork() {
-                Ok(ForkResult::Parent {child}) => {
-                    println!("Main({}) forked a child({})", getpid(), child);
-                    match waitpid(child, None) {
-                        Ok(_pid) => {
-                            println!("Child exited {:?}.", child);
-                        }
-                        Err(_) => {
-                            println!("Waitpid failed."); 
-                        }
+        match unsafe{ fork() } {
+            Ok(ForkResult::Parent {child}) => {
+                println!("Main({}) forked a child({})", getpid(), child);
+                match waitpid(child, None) {
+                    Ok(_pid) => {
+                        println!("Child exited {:?}.", child);
+                    }
+                    Err(_) => {
+                        println!("Waitpid failed."); 
                     }
                 }
-                Ok(ForkResult::Child) => {
-                    println!("Child({}) started. PPID is {}", getpid(), getppid());
-                    execvp(&bin, &[&bin, &args]).expect("coconush error: failed exec.");
-                    exit(0)
-                }
-                Err(_) => {
-                    panic!("Fork failed.");
-                }
-            };
-        }
+            }
+            Ok(ForkResult::Child) => {
+                println!("Child({}) started. PPID is {}", getpid(), getppid());
+                execvp(&bin, &[&bin, &args]).expect("coconush error: failed exec.");
+                exit(0)
+            }
+            Err(_) => {
+                panic!("Fork failed.");
+            }
+        };
     }
 }
