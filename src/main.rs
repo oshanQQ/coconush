@@ -1,15 +1,23 @@
+use colored::*;
 use nix::sys::wait::waitpid;
 use nix::unistd::{execvp, fork, getpid, getppid, ForkResult};
 use std::ffi::CString;
-use std::io;
+use std::io::*;
 use std::process::exit;
 use std::vec::Vec;
 
 fn main() {
     loop {
+        print!("{}", "coconush >>>".green().bold());
+        match stdout().flush() {
+            Ok(_) => {}
+            Err(error) => {
+                eprintln!("{}", error);
+            }
+        }
         // Read input line
         let mut input_line = String::new();
-        match io::stdin().read_line(&mut input_line) {
+        match stdin().read_line(&mut input_line) {
             Ok(_) => {}
             Err(error) => {
                 println!("coconush error: {}", error);
