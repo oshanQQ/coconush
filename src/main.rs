@@ -9,6 +9,7 @@ use std::vec::Vec;
 fn main() {
     loop {
         print!("{}", "coconush >>>".green().bold());
+        // At this point, release the buffer and output the prompt to the standard output
         match stdout().flush() {
             Ok(_) => {}
             Err(error) => {
