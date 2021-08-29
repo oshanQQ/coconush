@@ -8,13 +8,13 @@ fn main() {
         match prompt::display_prompt() {
             Ok(_) => {}
             Err(e) => {
-                println!("prompt error: {}", e);
+                eprintln!("prompt error: {}", e);
             }
         }
         match stdout().flush() {
             Ok(_) => {}
             Err(e) => {
-                println!("buf error: {}", e);
+                eprintln!("buf error: {}", e);
             }
         }
 
@@ -23,7 +23,7 @@ fn main() {
         match stdin().read_line(&mut line) {
             Ok(_) => {}
             Err(e) => {
-                println!("read line error: {}", e);
+                eprintln!("read line error: {}", e);
             }
         }
 
@@ -37,11 +37,11 @@ fn main() {
             Ok(mut child) => match child.wait() {
                 Ok(_) => {}
                 Err(e) => {
-                    println!("wait error: {}", e);
+                    eprintln!("wait error: {}", e);
                 }
             },
             Err(e) => {
-                println!("exec error: {}", e);
+                eprintln!("exec error: {}", e);
             }
         }
     }
