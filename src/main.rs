@@ -1,15 +1,33 @@
 mod prompt;
-use std::io::Result;
 use std::io::{stdin, stdout, Write};
+use std::process::exit;
 
-fn main() -> Result<()> {
+fn main() {
     loop {
-        prompt::display_prompt()?;
-        stdout().flush()?;
+        match prompt::display_prompt() {
+            Ok(_) => {}
+            Err(e) => {
+                println!("error: {}", e);
+                exit(0);
+            }
+        };
+        match stdout().flush() {
+            Ok(_) => {}
+            Err(e) => {
+                println!("error: {}", e);
+                exit(0);
+            }
+        };
 
         // input command
         let mut line = String::new();
-        stdin().read_line(&mut line)?;
+        match stdin().read_line(&mut line) {
+            Ok(_) => {}
+            Err(e) => {
+                println!("error: {}", e);
+                exit(0);
+            }
+        }
         line.remove(line.len() - 1);
 
         // debug

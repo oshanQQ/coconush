@@ -16,6 +16,7 @@ pub fn display_prompt() -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn get_current_directory() {
         assert!(display_prompt().is_ok());
