@@ -1,14 +1,17 @@
 use std::env;
 use std::io::Result;
 use whoami::{hostname, username};
+use colored::*;
 
 pub fn display_prompt() -> Result<()> {
     let current_path = env::current_dir()?;
     print!(
-        "{} @{} :{} >",
-        username(),
-        hostname(),
-        current_path.display()
+        "{}{}{}:{}{}",
+        username().green().truecolor(222, 165, 132).bold(),
+        "@".truecolor(222, 165, 132).bold(),
+        hostname().truecolor(222, 165, 132).bold(),
+        current_path.display(),
+        ">".truecolor(222, 165, 132).bold()
     );
     Ok(())
 }

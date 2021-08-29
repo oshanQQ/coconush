@@ -7,3 +7,4 @@ edition = "2018"
 
 [dependencies]
 whoami = "1.1.3"
+colored = "2"
