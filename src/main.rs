@@ -1,36 +1,48 @@
 mod prompt;
 use std::io::{stdin, stdout, Write};
-use std::process::exit;
+use std::process::Command;
 
 fn main() {
     loop {
+        // display status
         match prompt::display_prompt() {
             Ok(_) => {}
             Err(e) => {
-                println!("error: {}", e);
-                exit(0);
+                println!("prompt error: {}", e);
             }
-        };
+        }
         match stdout().flush() {
             Ok(_) => {}
             Err(e) => {
-                println!("error: {}", e);
-                exit(0);
+                println!("buf error: {}", e);
             }
-        };
+        }
 
-        // input command
+        // input line
         let mut line = String::new();
         match stdin().read_line(&mut line) {
             Ok(_) => {}
             Err(e) => {
-                println!("error: {}", e);
-                exit(0);
+                println!("read line error: {}", e);
             }
         }
-        line.remove(line.len() - 1);
 
-        // debug
-        println!("{}", line);
+        // parse input
+        let mut parts = line.trim().split_whitespace();
+        let command = parts.next().unwrap_or("\n");
+        let args = parts;
+
+        // exec command
+        match Command::new(command).args(args).spawn() {
+            Ok(mut child) => match child.wait() {
+                Ok(_) => {}
+                Err(e) => {
+                    println!("wait error: {}", e);
+                }
+            },
+            Err(e) => {
+                println!("exec error: {}", e);
+            }
+        }
     }
 }
