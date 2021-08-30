@@ -5,26 +5,17 @@ use std::process::Command;
 fn main() {
     loop {
         // display status
-        match prompt::display_prompt() {
-            Ok(_) => {}
-            Err(e) => {
-                eprintln!("prompt error: {}", e);
-            }
+        if let Err(e) = prompt::display_prompt() {
+            eprintln!("prompt error: {}", e);
         }
-        match stdout().flush() {
-            Ok(_) => {}
-            Err(e) => {
-                eprintln!("buf error: {}", e);
-            }
+        if let Err(e) = stdout().flush() {
+            eprintln!("buf error: {}", e);
         }
 
         // input line
         let mut line = String::new();
-        match stdin().read_line(&mut line) {
-            Ok(_) => {}
-            Err(e) => {
-                eprintln!("read line error: {}", e);
-            }
+        if let Err(e) = stdin().read_line(&mut line) {
+            eprintln!("read line error: {}", e);
         }
 
         // parse input
@@ -33,10 +24,10 @@ fn main() {
         let args = parts;
 
         // exec command
+
         match Command::new(command).args(args).spawn() {
-            Ok(mut child) => match child.wait() {
-                Ok(_) => {}
-                Err(e) => {
+            Ok(mut child) => {
+                if let Err(e) = child.wait() {
                     eprintln!("wait error: {}", e);
                 }
             },
