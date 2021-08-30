@@ -1,5 +1,7 @@
 mod prompt;
+use std::env;
 use std::io::{stdin, stdout, Write};
+use std::path::Path;
 use std::process::Command;
 
 fn main() {
@@ -24,16 +26,24 @@ fn main() {
         let args = parts;
 
         // exec command
-
-        match Command::new(command).args(args).spawn() {
-            Ok(mut child) => {
-                if let Err(e) = child.wait() {
-                    eprintln!("wait error: {}", e);
+        match command {
+            "cd" => {
+                let new_dir = args.peekable().peek().map_or("/", |x| *x);
+                let root = Path::new(new_dir);
+                if let Err(e) = env::set_current_dir(&root) {
+                    eprintln!("cd error: {}", e);
+                }
+            }
+            command => match Command::new(command).args(args).spawn() {
+                Ok(mut child) => {
+                    if let Err(e) = child.wait() {
+                        eprintln!("wait error: {}", e);
+                    }
+                }
+                Err(e) => {
+                    eprintln!("exec error: {}", e);
                 }
             },
-            Err(e) => {
-                eprintln!("exec error: {}", e);
-            }
         }
     }
 }
