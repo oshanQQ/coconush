@@ -33,7 +33,8 @@ fn main() {
                 if let Err(e) = env::set_current_dir(&root) {
                     eprintln!("cd error: {}", e);
                 }
-            }
+            },
+            "exit" => return,
             command => match Command::new(command).args(args).spawn() {
                 Ok(mut child) => {
                     if let Err(e) = child.wait() {
