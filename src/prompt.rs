@@ -1,7 +1,7 @@
+use colored::*;
 use std::env;
 use std::io::Result;
 use whoami::{hostname, username};
-use colored::*;
 
 pub fn display_prompt() -> Result<()> {
     let current_path = env::current_dir()?;
