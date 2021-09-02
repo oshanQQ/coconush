@@ -1,54 +1,50 @@
-use colored::*;
-use nix::sys::wait::waitpid;
-use nix::unistd::{execvp, fork, getpid, ForkResult};
-use std::ffi::CString;
-use std::io::*;
-use std::process::exit;
-use std::vec::Vec;
+mod prompt;
+use std::env;
+use std::io::{stdin, stdout, Write};
+use std::path::Path;
+use std::process::Command;
 
 fn main() {
     loop {
-        print!("{}", "coconush >>>".green().bold());
-        // At this point, release the buffer and output the prompt to the standard output
-        match stdout().flush() {
-            Ok(_) => {}
-            Err(error) => {
-                eprintln!("{}", error);
-            }
+        // display status
+        if let Err(e) = prompt::display_prompt() {
+            eprintln!("prompt error: {}", e);
         }
-        // Read input line
-        let mut input_line = String::new();
-        match stdin().read_line(&mut input_line) {
-            Ok(_) => {}
-            Err(error) => {
-                println!("coconush error: {}", error);
-            }
+        if let Err(e) = stdout().flush() {
+            eprintln!("buf error: {}", e);
         }
 
-        // Parse input line
-        // "foo bar baz" => ["foo", "bar", "baz"]
-        let command: Vec<&str> = input_line.split_whitespace().collect();
-        let bin = CString::new(command[0].to_string()).unwrap();
-        let args = CString::new(command[1].to_string()).unwrap();
+        // input line
+        let mut line = String::new();
+        if let Err(e) = stdin().read_line(&mut line) {
+            eprintln!("read line error: {}", e);
+        }
 
-        match unsafe { fork() } {
-            Ok(ForkResult::Parent { child }) => {
-                match waitpid(child, None) {
-                    Ok(_) => {
-                        
-                    }
-                    Err(_) => {
-                        println!("Waitpid failed.");
-                    }
+        // parse input
+        let mut parts = line.trim().split_whitespace();
+        let command = parts.next().unwrap_or("\n");
+        let args = parts;
+
+        // exec command
+        match command {
+            "cd" => {
+                let new_dir = args.peekable().peek().map_or("/", |x| *x);
+                let root = Path::new(new_dir);
+                if let Err(e) = env::set_current_dir(&root) {
+                    eprintln!("cd error: {}", e);
                 }
             }
-            Ok(ForkResult::Child) => {
-                execvp(&bin, &[&bin, &args]).expect("coconush error: failed exec.");
-                exit(0)
-            }
-            Err(_) => {
-                panic!("Fork failed.");
-            }
-        };
+            "exit" => return,
+            command => match Command::new(command).args(args).spawn() {
+                Ok(mut child) => {
+                    if let Err(e) = child.wait() {
+                        eprintln!("wait error: {}", e);
+                    }
+                }
+                Err(e) => {
+                    eprintln!("exec error: {}", e);
+                }
+            },
+        }
     }
 }
